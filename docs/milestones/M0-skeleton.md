@@ -15,7 +15,7 @@
 - Provider abstraction: `get_model(agent_config)` returning a chat model for `provider:model` strings, plus a fake model for tests.
 - Tracing (Langfuse or LangSmith, chosen by env) and an `llm_calls` cost table filled by a callback on every model call.
 - State versioning: a `graph_version` stored in state and a migration hook run on resume.
-- Auth and isolation: single owner login; every query scoped by `project_id`; a separate workspace directory per project.
+- Auth and isolation: no login for now (see `docs/DECISIONS.md`); every query scoped by `project_id`; a separate workspace directory per project.
 - Alembic migrations for `projects`, `project_config_snapshots`, `llm_calls`, `events`, `approvals`.
 
 ## Tasks
@@ -28,7 +28,7 @@
 - [x] Project graph stub with interrupt and checkpointer
 - [ ] FastAPI endpoints and streaming
 - [ ] Bare chat UI with approval buttons
-- [ ] Owner auth and project scoping
+- [x] Project scoping (no login, per `docs/DECISIONS.md`; the API-level isolation test lands with the API task)
 - [x] State versioning hook
 - [ ] Record pinned versions in `docs/DECISIONS.md`
 
