@@ -64,6 +64,7 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | Alembic | 1.20.1 |
 | psycopg | 3.3.6 |
 | pydantic | 2.14.1 |
+| SQLAlchemy | 2.1.6 |
 | Langfuse | v4 images (`:4`) |
 
 Still to pin: LangGraph, deepagents, FastAPI, Next.js, Playwright.
