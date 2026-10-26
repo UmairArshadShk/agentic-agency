@@ -66,4 +66,10 @@ Tests pass; `ruff` and `pyright` are clean; the milestone checklist is updated; 
 
 ## Commands
 
-Defined in M0 and kept in the `Makefile`. Expected: `make up` (start Postgres and services), `make test`, `make lint`, `make eval`, `make migrate`. Update this section when they exist.
+Kept in the `Makefile`:
+
+- `make env`: create `.env` from `.env.example` with generated dev secrets.
+- `make up`: start Postgres. `make up-tracing`: also start self-hosted Langfuse. `make down`: stop everything.
+- `make test`: pytest (skips `eval`-marked tests). `make lint`: ruff check, ruff format --check, pyright. `make fmt`: autofix.
+- `make eval`: run `@pytest.mark.eval` tests (costs money).
+- `make migrate`: Alembic migrations (wired up in the DB task).
