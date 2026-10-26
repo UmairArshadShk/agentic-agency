@@ -1,0 +1,73 @@
+# Agency configuration. See docs/CONFIG.md. Secrets are referenced by env var name only.
+# Models are provisional (owner decision, see docs/DECISIONS.md): local Ollama for now.
+version: 1
+
+providers:
+  ollama: { base_url: "http://localhost:11434" }
+  # openai: { api_key_env: OPENAI_API_KEY }
+
+defaults:
+  model: "ollama:llama3.1:8b"
+  # model: "openai:<strong-model-id>"
+  temperature: 0.2
+  max_tokens: 8000
+
+agents:
+  pm:
+    count: 1
+    # model: "openai:<strong-model-id>"
+    system_prompt_file: prompts/pm.md
+    system_prompt_append: ""
+    tools: [ask_user, read_requirements, write_requirements, jira_read, jira_create_ticket, jira_comment]
+    limits: { max_steps: 60, max_cost_usd_per_run: 3.00 }
+
+  designer:
+    count: 1
+    system_prompt_file: prompts/designer.md
+    tools: [write_file, screenshot, preview_server]
+    limits: { max_steps: 80, max_cost_usd_per_run: 4.00 }
+
+  architect:
+    count: 1
+    system_prompt_file: prompts/architect.md
+    tools: [read_file, write_file, scaffold_repo]
+    limits: { max_steps: 60, max_cost_usd_per_run: 3.00 }
+
+  developer:
+    count: 2
+    runtime: deep_agent            # deep_agent | claude_code (decided by the M1 spike)
+    # model: "openai:<coding-model-id>"
+    system_prompt_file: prompts/developer.md
+    tools: [shell, edit_file, git, github, test_runner, jira_read, jira_comment]
+    sandbox: { type: docker, cpus: 2, memory_gb: 4, network: allowlist }
+    limits: { max_steps: 200, max_cost_usd_per_ticket: 5.00 }
+
+  reviewer:
+    count: 1
+    model: "ollama:qwen3:4b"       # must differ from every developer model
+    # model: "openai:<other-model-id>"
+    system_prompt_file: prompts/reviewer.md
+    tools: [pr_diff, github_comment, dependency_check, jira_read, jira_comment]
+    limits: { max_steps: 40, max_cost_usd_per_run: 1.00 }
+
+  qa:
+    count: 1
+    system_prompt_file: prompts/qa.md
+    tools: [playwright, preview_env, staging_env, screenshot_diff, jira_read, jira_comment]
+    limits: { max_steps: 80, max_cost_usd_per_run: 2.00 }
+
+workflow:
+  max_parallel_tickets: 2
+  loop_caps: { review: 3, qa_pr: 3, qa_main: 3 }
+  merge: { serialize: true, rebase_before_merge: true }
+  on_qa_main_failure: revert       # revert | freeze_and_fix_forward
+  unblock_dependents_at: done      # done | merged
+  # Cost caps are inert with Ollama (cost is logged as 0); step limits are the active limits.
+  budgets: { max_cost_usd_per_ticket: 5.00, max_cost_usd_per_project: 50.00 }
+  require_distinct_reviewer_model: true
+
+# Enabled in M4 (token env vars must then be set):
+# integrations:
+#   jira:   { site: "recidiviz-internal.atlassian.net", project_key: "ATKAMAL123", token_env: JIRA_API_TOKEN }
+#   github: { org: "UmairArshadShk", token_env: GITHUB_TOKEN }
+#   notifications: { channel: email, to: "<owner-email>" }

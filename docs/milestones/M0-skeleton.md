@@ -22,7 +22,7 @@
 
 - [ ] Repo, tooling, CI, compose
 - [x] DB models and migrations
-- [ ] Config schema, loader, validation, snapshot
+- [x] Config schema, loader, validation, snapshot
 - [ ] Provider abstraction and fake model
 - [ ] Tracing and cost-logging callback
 - [ ] Project graph stub with interrupt and checkpointer
