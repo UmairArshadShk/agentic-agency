@@ -12,6 +12,14 @@ class _Strict(BaseModel):
 class ProviderConfig(_Strict):
     api_key_env: str | None = None  # name of an env var, never the key itself
     base_url: str | None = None
+    free: bool = False  # local provider: calls cost nothing, no pricing entry needed
+
+
+class ModelPrice(_Strict):
+    """USD per million tokens."""
+
+    input_per_mtok: float = Field(ge=0)
+    output_per_mtok: float = Field(ge=0)
 
 
 class Defaults(_Strict):
@@ -118,6 +126,7 @@ class AgencyConfig(_Strict):
     defaults: Defaults
     agents: Agents
     workflow: Workflow
+    pricing: dict[str, ModelPrice] = {}  # keyed by provider:model; needed for non-free providers
     integrations: Integrations = Integrations()
 
 

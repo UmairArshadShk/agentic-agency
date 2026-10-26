@@ -192,6 +192,24 @@ def test_runtime_is_developer_only(tmp_path: Path) -> None:
     expect_error(tmp_path, raw, "only valid for developer")
 
 
+# Rule 11: models on paid providers need a price
+def test_paid_model_without_pricing(tmp_path: Path) -> None:
+    raw = base_config()
+    raw["agents"]["pm"]["model"] = "openai:gpt-x"
+    expect_error(tmp_path, raw, "model 'openai:gpt-x' has no entry under pricing")
+
+
+def test_paid_model_with_pricing(tmp_path: Path) -> None:
+    raw = base_config()
+    raw["agents"]["pm"]["model"] = "openai:gpt-x"
+    raw["pricing"] = {"openai:gpt-x": {"input_per_mtok": 1.0, "output_per_mtok": 2.0}}
+    load(tmp_path, raw)
+
+
+def test_free_provider_needs_no_pricing(tmp_path: Path) -> None:
+    load(tmp_path, base_config())
+
+
 # Instances, merge order and project overrides
 def test_instance_id_must_exist(tmp_path: Path) -> None:
     raw = base_config()
@@ -204,6 +222,7 @@ def test_resolution_order_defaults_role_instance(tmp_path: Path) -> None:
     raw["agents"]["developer"]["model"] = "ollama:qwen3:4b"
     raw["agents"]["reviewer"]["model"] = "ollama:llama3.1:8b"
     raw["agents"]["developer"]["instances"] = [{"id": "dev-2", "model": "openai:gpt-x"}]
+    raw["pricing"] = {"openai:gpt-x": {"input_per_mtok": 1.0, "output_per_mtok": 2.0}}
     cfg = load(tmp_path, raw)
     assert [a.model for a in resolve_instances(cfg, "developer")] == [
         "ollama:qwen3:4b",

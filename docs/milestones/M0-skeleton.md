@@ -24,7 +24,7 @@
 - [x] DB models and migrations
 - [x] Config schema, loader, validation, snapshot
 - [x] Provider abstraction and fake model
-- [ ] Tracing and cost-logging callback
+- [x] Tracing and cost-logging callback
 - [ ] Project graph stub with interrupt and checkpointer
 - [ ] FastAPI endpoints and streaming
 - [ ] Bare chat UI with approval buttons
