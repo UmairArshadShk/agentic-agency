@@ -138,6 +138,15 @@ def validate(
         elif provider not in cfg.providers:
             errors.append(f"{where}: provider '{provider}' is not configured under providers")
 
+    # 11. every model on a paid provider has a price, so cost caps can be enforced
+    for where, model in _all_model_refs(cfg):
+        provider = model.partition(":")[0]
+        configured = cfg.providers.get(provider)
+        if configured and not configured.free and model not in cfg.pricing:
+            errors.append(
+                f"{where}: model '{model}' has no entry under pricing (provider is not free)"
+            )
+
     # 3. reviewer model differs from every developer model (instance overrides included)
     if cfg.workflow.require_distinct_reviewer_model:
         dev_models = {a.model for a in resolve_instances(cfg, "developer")}

@@ -67,8 +67,9 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | langchain-core | 1.7.0 |
 | langchain-ollama | 1.1.0 |
 | langchain-openai | 1.7.2 |
+| langfuse (Python SDK) | 5.0.4 |
 | SQLAlchemy | 2.1.6 |
-| Langfuse | v4 images (`:4`) |
+| Langfuse server | v4 images (`:4`), verified 4.70.1 |
 
 Still to pin: LangGraph, deepagents, FastAPI, Next.js, Playwright.
 
