@@ -25,7 +25,7 @@
 - [x] Config schema, loader, validation, snapshot
 - [x] Provider abstraction and fake model
 - [x] Tracing and cost-logging callback
-- [ ] Project graph stub with interrupt and checkpointer
+- [x] Project graph stub with interrupt and checkpointer
 - [ ] FastAPI endpoints and streaming
 - [ ] Bare chat UI with approval buttons
 - [ ] Owner auth and project scoping

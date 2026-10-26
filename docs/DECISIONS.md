@@ -68,6 +68,9 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | langchain-ollama | 1.1.0 |
 | langchain-openai | 1.7.2 |
 | langfuse (Python SDK) | 5.0.4 |
+| langgraph | 1.2.17 |
+| langgraph-checkpoint-postgres | 3.2.0 |
+| psycopg-pool | 3.3.3 |
 | SQLAlchemy | 2.1.6 |
 | Langfuse server | v4 images (`:4`), verified 4.70.1 |
 
