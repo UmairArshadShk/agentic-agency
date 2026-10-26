@@ -112,3 +112,16 @@ integrations:
 - Editing `agency.yaml` affects new projects only. Running projects keep their snapshot unless the owner explicitly applies a change. Applying a change creates a new snapshot version, records who applied it and why, and is logged in `events`.
 - A change that reduces `developer.count` lets in-flight tickets finish and stops assigning new ones to the removed instances. A change that raises it takes effect at the next scheduling step.
 - Every cost-log row records the config snapshot version that produced it, so model and prompt changes can be compared on the reference briefs.
+
+## Implementation notes (M0)
+
+- **Code:** schema in `agency/config/schema.py`, loader and validation in `agency/config/loader.py`, snapshots in `agency/config/snapshot.py`. The loader reports every problem at once in a `ConfigError`.
+- **Providers:** each entry takes `api_key_env` (name of an env var; rule 4 requires it to be set and non-empty) and optional `base_url`. Local providers such as `ollama` need no key. Model strings split on the first colon, so `ollama:llama3.1:8b` is provider `ollama`, model `llama3.1:8b`.
+- **Model fallback:** `agents.<role>.model` is optional and falls back to `defaults.model`.
+- **Instance ids:** instances are numbered from 1 with a role prefix: `pm-1`, `designer-1`, `architect-1`, `dev-1..dev-N`, `rev-1..rev-N`, `qa-1..qa-N`. An `instances` entry must use one of these ids. Overridable per instance: `model`, `system_prompt_append`, `temperature`, `max_tokens`. `resolve_instances(cfg, role)` returns one fully merged `ResolvedAgent` per instance.
+- **Tool names:** the allowlist of valid names is `agency/tools/registry.py`. Jira status tools are intentionally not in it.
+- **Runtimes:** installed adapters are listed in `agency/agents/runtimes.py` (rule 10). `runtime` and `sandbox` are valid only on `developer`.
+- **Integrations are optional.** Omit the block until M4; once `jira` or `github` is present, its `token_env` must be set.
+- **Rule 7:** worst case is `workflow.max_parallel_tickets` times the larger of `workflow.budgets.max_cost_usd_per_ticket` and `agents.developer.limits.max_cost_usd_per_ticket`.
+- **Cost caps and local models:** Ollama calls are logged with cost 0, so cost caps are inert for them; `max_steps` is the active limit.
+- **Project override:** `workspaces/<project>/agency.override.yaml` is deep-merged onto `agency.yaml` (mappings merge, lists and scalars replace) and the result goes through the same validation.
