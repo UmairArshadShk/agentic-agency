@@ -27,5 +27,5 @@ fmt:
 eval:
 	uv run pytest -m eval -o addopts=""
 
-migrate:  ## wired up in the DB task
-	@echo "no migrations yet"
+migrate:  ## apply Alembic migrations to DATABASE_URL
+	uv run alembic upgrade head

@@ -21,7 +21,7 @@
 ## Tasks
 
 - [ ] Repo, tooling, CI, compose
-- [ ] DB models and migrations
+- [x] DB models and migrations
 - [ ] Config schema, loader, validation, snapshot
 - [ ] Provider abstraction and fake model
 - [ ] Tracing and cost-logging callback
