@@ -64,6 +64,9 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | Alembic | 1.20.1 |
 | psycopg | 3.3.6 |
 | pydantic | 2.14.1 |
+| langchain-core | 1.7.0 |
+| langchain-ollama | 1.1.0 |
+| langchain-openai | 1.7.2 |
 | SQLAlchemy | 2.1.6 |
 | Langfuse | v4 images (`:4`) |
 
