@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 name = "agency"
 version = "0.1.0"
 source = { editable = "." }
+
 dependencies = [
     { name = "alembic" },
     { name = "psycopg", extra = ["binary"] },
@@ -22,6 +23,7 @@ dev = [
 ]
 
 [package.metadata]
+
 requires-dist = [
     { name = "alembic", specifier = ">=1.20.1" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.6" },
@@ -38,6 +40,7 @@ dev = [
 ]
 
 [[package]]
+
 name = "alembic"
 version = "1.20.1"
 source = { registry = "https://pypi.org/simple" }
@@ -106,6 +109,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "mako"
 version = "1.4.3"
 source = { registry = "https://pypi.org/simple" }
@@ -231,6 +235,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "nodeenv"
 version = "1.11.0"
 source = { registry = "https://pypi.org/simple" }
@@ -283,6 +288,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "psycopg"
 version = "3.3.6"
 source = { registry = "https://pypi.org/simple" }
@@ -402,6 +408,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "python-dotenv"
 version = "1.2.4"
 source = { registry = "https://pypi.org/simple" }
@@ -411,6 +418,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "pyyaml"
 version = "6.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -554,6 +562,7 @@ wheels = [
 ]
 
 [[package]]
+
 name = "typing-extensions"
 version = "4.16.0"
 source = { registry = "https://pypi.org/simple" }

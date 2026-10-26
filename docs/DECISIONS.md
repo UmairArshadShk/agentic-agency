@@ -60,6 +60,7 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | pytest | 9.1.1 |
 | Postgres (agency) | 16 |
 | Postgres (Langfuse) | 17 |
+
 | SQLAlchemy | 2.1.6 |
 | Alembic | 1.20.1 |
 | psycopg | 3.3.6 |
