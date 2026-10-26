@@ -29,7 +29,7 @@
 - [ ] FastAPI endpoints and streaming
 - [ ] Bare chat UI with approval buttons
 - [ ] Owner auth and project scoping
-- [ ] State versioning hook
+- [x] State versioning hook
 - [ ] Record pinned versions in `docs/DECISIONS.md`
 
 ## Acceptance criteria
