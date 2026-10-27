@@ -1,4 +1,4 @@
-.PHONY: env up up-tracing down test lint fmt eval migrate
+.PHONY: env up up-tracing down test lint fmt eval migrate api
 
 env:  ## create .env from .env.example with generated dev secrets (no-op if it exists)
 	@test -f .env || ./scripts/make_env.sh
@@ -29,3 +29,6 @@ eval:
 
 migrate:  ## apply Alembic migrations to DATABASE_URL
 	uv run alembic upgrade head
+
+api:  ## run the API on 127.0.0.1:8000 (localhost only: there is no login)
+	uv run uvicorn agency.api.app:create_app --factory --host 127.0.0.1 --port 8000

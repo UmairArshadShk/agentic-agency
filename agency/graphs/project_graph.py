@@ -12,7 +12,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
-from langgraph.types import interrupt
+from langgraph.types import StateSnapshot, interrupt
 
 GRAPH_VERSION = 1
 DECISIONS = ("approved", "changes_requested")
@@ -93,3 +93,8 @@ def pending_interrupt(result: dict[str, Any]) -> dict[str, Any] | None:
     """The payload the workflow is waiting on, or None if it ran to the end."""
     interrupts = result.get("__interrupt__")
     return interrupts[0].value if interrupts else None
+
+
+def pending_gate(snapshot: StateSnapshot) -> dict[str, Any] | None:
+    """The gate payload a saved (paused) workflow is waiting on, or None."""
+    return snapshot.interrupts[0].value if snapshot.interrupts else None

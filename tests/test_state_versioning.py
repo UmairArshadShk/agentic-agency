@@ -152,3 +152,31 @@ def test_old_checkpoint_in_postgres_is_migrated_after_a_restart(migrated_engine:
     result = run(new_process())
     assert result["graph_version"] == 1
     assert result["stages"][-1] == "stub_c"
+
+
+def test_on_migrate_callback_fires_only_when_a_migration_ran() -> None:
+    graph = build_graph(InMemorySaver())
+    pid = str(uuid.uuid4())
+    run(pause_with(graph, old_state(pid), pid))
+    seen: list[tuple[int, int]] = []
+    run(
+        resume_project(
+            graph,
+            thread_config(pid),
+            {"decision": "changes_requested"},
+            on_migrate=lambda before, after: seen.append((before, after)),
+            migrations={0: add_revisions},
+        )
+    )
+    assert seen == [(0, 1)]
+
+    run(
+        resume_project(
+            graph,
+            thread_config(pid),
+            {"decision": "approved"},
+            on_migrate=lambda before, after: seen.append((before, after)),
+            migrations={},
+        )
+    )
+    assert seen == [(0, 1)]  # already current: no second call

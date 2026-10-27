@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.20.1",
+    "fastapi>=0.162.0",
     "langchain-core>=1.7.0",
     "langchain-ollama>=1.1.0",
     "langchain-openai>=1.7.2",
@@ -15,10 +16,12 @@ dependencies = [
     "python-dotenv>=1.2.4",
     "pyyaml>=6.0.3",
     "sqlalchemy>=2",
+    "uvicorn[standard]>=0.54.0",
 ]
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "pre-commit>=4.7.0",
     "pyright>=1.1.414",
     "pytest>=9.1.1",
