@@ -68,6 +68,11 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | langchain-ollama | 1.1.0 |
 | langchain-openai | 1.7.2 |
 | langfuse (Python SDK) | 5.0.4 |
+| Next.js | 16.4.3 |
+| React | 19.3.0 |
+| TypeScript | 5.9.3 |
+| vitest | 5.0.5 |
+| Playwright | 1.64.1 |
 | fastapi | 0.162.0 |
 | uvicorn | 0.54.0 |
 | starlette | 1.10.0 |
@@ -77,7 +82,7 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | SQLAlchemy | 2.1.6 |
 | Langfuse server | v4 images (`:4`), verified 4.70.1 |
 
-Still to pin: LangGraph, deepagents, FastAPI, Next.js, Playwright.
+Still to pin: deepagents.
 
 ## Log
 
@@ -101,3 +106,5 @@ Add entries as `YYYY-MM-DD: decision, reason`.
 - 2026-10-27: Chat streaming uses Server-Sent Events (`event: token` / `event: done`) over a POST, not WebSocket. Reason: one-way streaming, plain HTTP, simpler to test and proxy. Replies come from a stub responder until the PM agent exists (M2); the wire format is final.
 - 2026-10-27: Ports: API on 127.0.0.1:8000 (`make api`), Next.js UI on 3001 (Langfuse already uses 3000), Postgres on 5442. CORS allows the UI origin only (`AGENCY_CORS_ORIGINS`).
 - 2026-10-27: Approvals are resumed under a per-project lock, so a double click resumes a gate once (the second request gets 409). Decisions are `approved` or `changes_requested`.
+- 2026-10-27: UI is plain CSS (no Tailwind) with a client-side chat component; chat history is kept in the browser (localStorage) until the PM agent persists conversations server-side in M2. `next.config.ts` sets `allowedDevOrigins: ["127.0.0.1"]` because Next 16 blocks dev assets from other origins and the UI stops hydrating without it.
+- 2026-10-27: Browser end-to-end tests use Playwright (`make web-e2e`), against the real API and UI. CI runs the UI lint, typecheck, unit tests and build; the e2e run is local until CI has a database job for it.
