@@ -22,7 +22,7 @@
 
 ## Tasks
 
-- [ ] Repo, tooling, CI, compose
+- [x] Repo, tooling, CI, compose
 - [x] DB models and migrations
 - [x] Config schema, loader, validation, snapshot
 - [x] Provider abstraction and fake model
