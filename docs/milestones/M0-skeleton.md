@@ -27,7 +27,7 @@
 - [x] Tracing and cost-logging callback
 - [x] Project graph stub with interrupt and checkpointer
 - [x] FastAPI endpoints and streaming
-- [ ] Bare chat UI with approval buttons
+- [x] Bare chat UI with approval buttons
 - [x] Project scoping (no login, per `docs/DECISIONS.md`; the API-level isolation test lands with the API task)
 - [x] State versioning hook
 - [ ] Record pinned versions in `docs/DECISIONS.md`

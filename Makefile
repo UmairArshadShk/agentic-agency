@@ -1,4 +1,4 @@
-.PHONY: env up up-tracing down test lint fmt eval migrate api
+.PHONY: env up up-tracing down test lint fmt eval migrate api web web-install web-check web-e2e
 
 env:  ## create .env from .env.example with generated dev secrets (no-op if it exists)
 	@test -f .env || ./scripts/make_env.sh
@@ -32,3 +32,15 @@ migrate:  ## apply Alembic migrations to DATABASE_URL
 
 api:  ## run the API on 127.0.0.1:8000 (localhost only: there is no login)
 	uv run uvicorn agency.api.app:create_app --factory --host 127.0.0.1 --port 8000
+
+web-install:  ## install UI dependencies
+	cd web && pnpm install --frozen-lockfile
+
+web:  ## run the UI on http://localhost:3001 (needs `make api`)
+	cd web && pnpm dev
+
+web-check:  ## UI lint, typecheck, unit tests and build
+	cd web && pnpm lint && pnpm typecheck && pnpm test && pnpm build
+
+web-e2e:  ## browser tests against the real API and UI (needs `make up` and `make migrate`)
+	cd web && pnpm e2e
