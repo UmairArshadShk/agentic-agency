@@ -47,3 +47,46 @@ test("chat history survives a page reload", async ({ page }) => {
   await page.getByRole("button", { name }).click();
   await expect(page.getByRole("log")).toContainText("remember me");
 });
+
+test("a slow project-list refresh does not wipe a project that was just created", async ({
+  page,
+}) => {
+  // Hold the first list response until the test releases it, so it arrives after the project
+  // was created and shown.
+  let release!: () => void;
+  const released = new Promise<void>((resolve) => (release = resolve));
+  let held = false;
+  await page.route("**/projects", async (route) => {
+    if (route.request().method() === "GET" && !held) {
+      held = true;
+      const response = await route.fetch();
+      const body = (await response.json()) as { name: string }[];
+      await released;
+      // Deliver the list as it was before the project existed: a response that is stale by the
+      // time it arrives (the server may build it after the create finishes, so strip it here).
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        headers: { "access-control-allow-origin": "http://127.0.0.1:3001" },
+        body: JSON.stringify(body.filter((p) => !p.name.startsWith("e2e-race"))),
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  const name = `e2e-race-${Date.now()}`;
+  await page.goto("/");
+  await page.getByLabel("New project name").fill(name);
+  await page.getByRole("button", { name: "Start" }).click();
+  await expect(page.getByRole("heading", { name })).toBeVisible();
+  expect(held).toBe(true);
+
+  release(); // the stale list (without the project) is delivered to the page now
+  await page.waitForTimeout(1000);
+  // Plain counts, not retrying assertions: a retrying check would wait for the next poll to put
+  // the project back and hide the bug.
+  expect(await page.getByText("Start or select a project to begin.").count()).toBe(0);
+  expect(await page.getByRole("heading", { name }).count()).toBe(1);
+  expect(await page.getByLabel("Approval gate").count()).toBe(1);
+});

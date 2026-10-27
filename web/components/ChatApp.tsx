@@ -46,10 +46,14 @@ export function ChatApp() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  // Bumped on every local change to the project list, so a slower in-flight refresh can tell
+  // that its answer is stale and must not overwrite a project we just created or updated.
+  const localVersion = useRef(0);
 
   const selected = projects.find((p) => p.id === selectedId) ?? null;
 
   const upsert = useCallback((project: Project) => {
+    localVersion.current += 1;
     setProjects((current) =>
       current.some((p) => p.id === project.id)
         ? current.map((p) => (p.id === project.id ? project : p))
@@ -58,8 +62,10 @@ export function ChatApp() {
   }, []);
 
   const refresh = useCallback(async () => {
+    const startedAt = localVersion.current;
     try {
-      setProjects(await listProjects());
+      const list = await listProjects();
+      if (localVersion.current === startedAt) setProjects(list);
       setError(null);
     } catch (e) {
       setError(errorText(e));
