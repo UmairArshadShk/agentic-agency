@@ -72,4 +72,7 @@ Kept in the `Makefile`:
 - `make up`: start Postgres. `make up-tracing`: also start self-hosted Langfuse. `make down`: stop everything.
 - `make test`: pytest (skips `eval`-marked tests). `make lint`: ruff check, ruff format --check, pyright. `make fmt`: autofix.
 - `make eval`: run `@pytest.mark.eval` tests (costs money).
-- `make migrate`: Alembic migrations (wired up in the DB task).
+- `make migrate`: Alembic migrations.
+- `make api`: run the API on 127.0.0.1:8000. `make web`: run the UI on http://localhost:3001. `make web-install`: install UI dependencies.
+- `make web-check`: UI lint, typecheck, unit tests and build. `make web-e2e`: Playwright browser tests against the real API and UI (needs `make up` and `make migrate`).
+- `make up-tracing` also starts Langfuse; `uv run python scripts/check_tracing.py` makes one real model call and checks its trace.

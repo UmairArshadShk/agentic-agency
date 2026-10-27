@@ -30,16 +30,16 @@
 - [x] Bare chat UI with approval buttons
 - [x] Project scoping (no login, per `docs/DECISIONS.md`; the API-level isolation test lands with the API task)
 - [x] State versioning hook
-- [ ] Record pinned versions in `docs/DECISIONS.md`
+- [x] Record pinned versions in `docs/DECISIONS.md` (deepagents is pinned when first used, in M1/M2)
 
 ## Acceptance criteria
 
-- [ ] Start a project, reach the gate, stop the server, restart it, approve in the UI, and the workflow continues from where it paused.
-- [ ] Each validation rule in `docs/CONFIG.md` has a test that fails on bad input, including: unknown tool, singleton role with count above 1, reviewer and developer on the same model, missing env var, over-budget parallelism.
-- [ ] Snapshot immutability test: editing `agency.yaml` after a project starts does not change that project's effective config.
-- [ ] A run with the fake model writes `llm_calls` rows with project, agent, model and config version; a real-model run appears in the tracing tool.
-- [ ] Another project's data is unreachable through the API (isolation test).
-- [ ] `make test` and `make lint` are green in CI.
+- [x] Start a project, reach the gate, stop the server, restart it, approve in the UI, and the workflow continues from where it paused. Evidence: `web/e2e/restart.e2e.ts` (hard `SIGKILL`, new server process, approve in the browser; `make web-e2e`), plus `tests/test_api.py::test_paused_project_resumes_after_the_server_restarts` and `tests/test_project_graph.py::test_pause_survives_a_restart_with_the_postgres_checkpointer`.
+- [x] Each validation rule in `docs/CONFIG.md` has a test that fails on bad input, including: unknown tool, singleton role with count above 1, reviewer and developer on the same model, missing env var, over-budget parallelism. Evidence: `tests/test_config.py` (rules 1 to 10, plus rule 11 for pricing).
+- [x] Snapshot immutability test: editing `agency.yaml` after a project starts does not change that project's effective config. Evidence: `tests/test_config_snapshot.py::test_editing_agency_yaml_does_not_change_a_started_project`, and database triggers in `tests/test_db.py`.
+- [x] A run with the fake model writes `llm_calls` rows with project, agent, model and config version (`tests/test_llm_cost.py`); a real-model run appears in the tracing tool (`scripts/check_tracing.py`: a real `llama3.1:8b` call produced a Langfuse trace whose id matches the `llm_calls` row). The OpenAI path is untested until an `OPENAI_API_KEY` is available.
+- [x] Another project's data is unreachable through the API (isolation test). Evidence: `tests/test_api.py::test_projects_are_isolated_from_each_other`, `tests/test_project_scope.py`, `tests/test_workspaces.py`.
+- [ ] `make test` and `make lint` are green in CI. Both pass locally (121 Python tests, UI lint, typecheck, unit tests and build); confirm the CI run on `main`.
 
 ## Out of scope
 
