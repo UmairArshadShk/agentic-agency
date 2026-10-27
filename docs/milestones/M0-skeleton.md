@@ -1,5 +1,7 @@
 # M0: Skeleton, config and observability
 
+**Status: done (2026-10-27). All tasks and acceptance criteria pass.**
+
 **Goal:** a runnable skeleton where a workflow can pause for a human, survive a restart, and resume, with config, tracing and cost logging in place from day one.
 
 **Before starting:** confirm the stack defaults in `CLAUDE.md`, and get the owner's Jira and GitHub details (these can be placeholders until M4).
@@ -39,7 +41,7 @@
 - [x] Snapshot immutability test: editing `agency.yaml` after a project starts does not change that project's effective config. Evidence: `tests/test_config_snapshot.py::test_editing_agency_yaml_does_not_change_a_started_project`, and database triggers in `tests/test_db.py`.
 - [x] A run with the fake model writes `llm_calls` rows with project, agent, model and config version (`tests/test_llm_cost.py`); a real-model run appears in the tracing tool (`scripts/check_tracing.py`: a real `llama3.1:8b` call produced a Langfuse trace whose id matches the `llm_calls` row). The OpenAI path is untested until an `OPENAI_API_KEY` is available.
 - [x] Another project's data is unreachable through the API (isolation test). Evidence: `tests/test_api.py::test_projects_are_isolated_from_each_other`, `tests/test_project_scope.py`, `tests/test_workspaces.py`.
-- [ ] `make test` and `make lint` are green in CI. Both pass locally (121 Python tests, UI lint, typecheck, unit tests and build); confirm the CI run on `main`.
+- [x] `make test` and `make lint` are green in CI. Evidence: the Python job (121 tests, ruff, pyright) and the web job (lint, typecheck, unit tests, build) are green on `main`. The web job caught a real gap: `next typegen` must run before `tsc` on a clean checkout.
 
 ## Out of scope
 
