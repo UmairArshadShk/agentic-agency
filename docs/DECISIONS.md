@@ -68,6 +68,9 @@ Exact Python dependency versions are pinned in `uv.lock`. Notable pins so far:
 | langchain-ollama | 1.1.0 |
 | langchain-openai | 1.7.2 |
 | langfuse (Python SDK) | 5.0.4 |
+| fastapi | 0.162.0 |
+| uvicorn | 0.54.0 |
+| starlette | 1.10.0 |
 | langgraph | 1.2.17 |
 | langgraph-checkpoint-postgres | 3.2.0 |
 | psycopg-pool | 3.3.3 |
@@ -95,3 +98,6 @@ Add entries as `YYYY-MM-DD: decision, reason`.
 - 2026-10-26: Starting `developer.count` is 2.
 - 2026-10-26: PM completeness check is a hard block: every checklist area must be covered or marked "not applicable" by the client before the PM can finish.
 - 2026-10-26: M2 simulated client runs on `ollama:qwen3:4b`. Evals have no dollar cap; they are capped at 40 turns each.
+- 2026-10-27: Chat streaming uses Server-Sent Events (`event: token` / `event: done`) over a POST, not WebSocket. Reason: one-way streaming, plain HTTP, simpler to test and proxy. Replies come from a stub responder until the PM agent exists (M2); the wire format is final.
+- 2026-10-27: Ports: API on 127.0.0.1:8000 (`make api`), Next.js UI on 3001 (Langfuse already uses 3000), Postgres on 5442. CORS allows the UI origin only (`AGENCY_CORS_ORIGINS`).
+- 2026-10-27: Approvals are resumed under a per-project lock, so a double click resumes a gate once (the second request gets 409). Decisions are `approved` or `changes_requested`.

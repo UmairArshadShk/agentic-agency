@@ -67,8 +67,15 @@ async def resume_project(
     graph: CompiledStateGraph[Any, Any, Any, Any],
     config: RunnableConfig,
     resume_value: Any,
+    *,
+    on_migrate: Callable[[int, int], None] | None = None,
     **migrate_kwargs: Any,
 ) -> dict[str, Any]:
-    """Migrate the saved state if needed, then resume the paused workflow with the answer."""
-    await migrate_state(graph, config, **migrate_kwargs)
+    """Migrate the saved state if needed, then resume the paused workflow with the answer.
+
+    on_migrate(from_version, to_version) is called only when a migration actually ran.
+    """
+    before, after = await migrate_state(graph, config, **migrate_kwargs)
+    if on_migrate and before != after:
+        on_migrate(before, after)
     return await graph.ainvoke(Command(resume=resume_value), config)
